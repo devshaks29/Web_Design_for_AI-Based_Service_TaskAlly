@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskAlly | AI-Powered Support for Small Business</title>
+    <meta name="description" content="We run your business tools in the background so you don't have to.">
+    
+    <!-- Fonts: Manrope for that modern, human-friendly feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons: Lucide (Clean, modern outlines) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Tailwind Config for specific colors -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            teal: '#0FB9B1',
+                            navy: '#1A3353',
+                            light: '#F8FAFC',
+                            surface: '#FFFFFF'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 20px -2px rgba(26, 51, 83, 0.05)',
+                        'soft-hover': '0 20px 40px -5px rgba(26, 51, 83, 0.08)',
+                        'glow': '0 0 20px rgba(15, 185, 177, 0.3)',
+                    },
+                    backgroundImage: {
+                        'gradient-mesh': 'radial-gradient(at 0% 0%, hsla(178,78%,45%,0.1) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(214,52%,21%,0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, hsla(178,78%,45%,0.05) 0px, transparent 50%)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Animations */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.3); opacity: 0; }
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: 0; }
+        }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-delay { animation: float 7s ease-in-out infinite 1.5s; }
+        .animate-float-delay-2 { animation: float 8s ease-in-out infinite 0.5s; }
+        
+        .pulse-ring::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            border: 2px solid #0FB9B1;
+            animation: pulse-ring 3s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-100 { transition-delay: 0.1s; }
+        .reveal-delay-200 { transition-delay: 0.2s; }
+        .reveal-delay-300 { transition-delay: 0.3s; }
+
+        /* Page Transitions */
+        .page-section {
+            transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .hidden-page {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(135deg, #1A3353 0%, #0FB9B1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-600 antialiased bg-slate-50 overflow-x-hidden selection:bg-brand-teal selection:text-white">
+
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-lg border-b border-white/20 shadow-sm transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer group" onclick="showPage('home')">
+                    <img src="https://i.ibb.co.com/Z63cKvMx/Transparent.png" alt="TaskAlly Logo" class="h-8 w-auto object-contain hover:opacity-90 transition-opacity">
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="showPage('home')" class="text-sm font-semibold text-slate-600 hover:text-brand-teal transition-colors relative group">
+                        Home
+                        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-teal transition-all group-hover:w-full"></span>
+                    </button>
+                    <button class="text-sm font-semibold text-slate-600 hover:text-brand-teal transition-colors relative group">
+                        How it Works
+                         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-teal transition-all group-hover:w-full"></span>
+                    </button>
+                    <button onclick="showPage('pricing')" class="text-sm font-semibold text-slate-600 hover:text-brand-teal transition-colors relative group">
+                        Pricing
+                         <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-teal transition-all group-hover:w-full"></span>
+                    </button>
+                    <button class="bg-brand-navy text-white px-6 py-2.5 rounded-full text-sm font-bold hover:shadow-lg hover:shadow-brand-navy/20 hover:-translate-y-0.5 transition-all">
+                        Get Started
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-600 hover:text-brand-navy focus:outline-none p-2 rounded-md hover:bg-slate-100">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu (Hidden by default) -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-xl border-t border-gray-100 p-4 absolute w-full shadow-xl">
+            <div class="flex flex-col space-y-4">
+                <button onclick="showPage('home')" class="text-left font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg">Home</button>
+                <button onclick="showPage('pricing')" class="text-left font-medium text-slate-600 p-2 hover:bg-slate-50 rounded-lg">Pricing</button>
+                <button class="text-left font-medium text-brand-teal p-2 hover:bg-teal-50 rounded-lg">Contact Sales</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="pt-20">
+
+        <!-- ========================================= -->
+        <!-- HOMEPAGE -->
+        <!-- ========================================= -->
+        <div id="home-page" class="page-section">
+            
+            <!-- HERO SECTION -->
+            <section class="relative overflow-hidden py-20 lg:py-32 bg-gradient-mesh">
+                <!-- Decorative Blobs -->
+                <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-teal/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+                <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-navy/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        
+                        <!-- Text Content -->
+                        <div class="max-w-2xl reveal active">
+                            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-brand-teal/20 text-brand-teal text-xs font-bold tracking-wide shadow-sm mb-8 animate-float">
+                                <span class="relative flex h-2 w-2">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-teal opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-teal"></span>
+                                </span>
+                                INTELLIGENT BUSINESS SUPPORT
+                            </div>
+                            <h1 class="text-5xl lg:text-7xl font-extrabold text-brand-navy leading-[1.1] tracking-tight mb-6">
+                                AI support,<br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-teal to-blue-600">handled for you.</span>
+                            </h1>
+                            <p class="text-lg lg:text-xl text-slate-500 mb-10 leading-relaxed max-w-lg">
+                                We set up and run the tools behind the scenes, managing your calls, bookings, and messages. No dashboards to learn.
+                            </p>
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                <button class="relative bg-brand-teal text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-brand-teal/30 hover:shadow-brand-teal/50 hover:-translate-y-1 transition-all overflow-hidden group">
+                                    <span class="relative z-10 flex items-center gap-2">
+                                        See How It Works
+                                        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                                    </span>
+                                    <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                                </button>
+                                <button onclick="showPage('pricing')" class="px-8 py-4 rounded-full font-bold text-brand-navy border-2 border-slate-200 hover:border-brand-navy hover:bg-white transition-all bg-white/50 backdrop-blur-sm">
+                                    View Pricing
+                                </button>
+                            </div>
+                            
+                            <!-- Mini Social Proof -->
+                            <div class="mt-10 flex items-center gap-4 text-sm text-slate-400 font-medium">
+                                <div class="flex -space-x-2">
+                                    <div class="w-8 h-8 rounded-full bg-slate-200 border-2 border-white"></div>
+                                    <div class="w-8 h-8 rounded-full bg-slate-300 border-2 border-white"></div>
+                                    <div class="w-8 h-8 rounded-full bg-slate-400 border-2 border-white"></div>
+                                </div>
+                                <span>Trusted by 100+ businesses</span>
+                            </div>
+                        </div>
+
+                        <!-- Abstract Visual -->
+                        <div class="relative h-[500px] w-full flex items-center justify-center reveal reveal-delay-200">
+                            <!-- Abstract Geometric Composition -->
+                            <div class="relative w-full h-full perspective-1000">
+                                
+                                <!-- Central Core -->
+                                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-20 animate-float">
+                                    <div class="w-32 h-32 bg-gradient-to-br from-brand-navy to-slate-900 rounded-[2rem] shadow-2xl shadow-brand-navy/30 flex items-center justify-center relative border border-white/10">
+                                        <div class="absolute inset-0 bg-brand-teal/20 blur-xl rounded-full"></div>
+                                        <i data-lucide="cpu" class="w-12 h-12 text-brand-teal relative z-10"></i>
+                                        
+                                        <!-- Orbiting dots -->
+                                        <div class="absolute w-40 h-40 border border-brand-teal/20 rounded-full animate-spin-slow"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Floating Task Nodes -->
+                                <!-- Node 1: Phone -->
+                                <div class="absolute top-[20%] right-[20%] animate-float-delay bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 flex gap-4 items-center max-w-[200px] z-30">
+                                    <div class="w-12 h-12 rounded-xl bg-green-50 flex items-center justify-center text-green-600 shadow-sm">
+                                        <i data-lucide="phone-call" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <div class="h-2.5 w-20 bg-slate-200 rounded-full mb-2"></div>
+                                        <div class="h-2 w-12 bg-slate-100 rounded-full"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Node 2: Calendar -->
+                                <div class="absolute bottom-[20%] left-[15%] animate-float-delay-2 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 flex gap-4 items-center max-w-[200px] z-30">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shadow-sm">
+                                        <i data-lucide="calendar-check" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <div class="h-2.5 w-24 bg-slate-200 rounded-full mb-2"></div>
+                                        <div class="h-2 w-16 bg-slate-100 rounded-full"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Node 3: Message -->
+                                <div class="absolute top-[30%] left-[10%] animate-float bg-white/80 backdrop-blur-sm p-3 rounded-xl shadow-md border border-white/50 z-10 scale-90 opacity-80">
+                                     <div class="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-600">
+                                        <i data-lucide="message-square" class="w-4 h-4"></i>
+                                    </div>
+                                </div>
+                                
+                                <!-- Connecting Lines (SVG Animation) -->
+                                <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
+                                    <defs>
+                                        <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" style="stop-color:#0FB9B1;stop-opacity:0" />
+                                            <stop offset="50%" style="stop-color:#0FB9B1;stop-opacity:0.5" />
+                                            <stop offset="100%" style="stop-color:#0FB9B1;stop-opacity:0" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Curved paths connecting center to nodes -->
+                                    <path d="M300 250 Q 400 150 450 150" stroke="url(#lineGrad)" stroke-width="2" fill="none" class="animate-pulse" />
+                                    <path d="M300 250 Q 200 350 150 400" stroke="url(#lineGrad)" stroke-width="2" fill="none" class="animate-pulse" style="animation-delay: 1s"/>
+                                    <path d="M300 250 Q 150 200 100 200" stroke="url(#lineGrad)" stroke-width="1" fill="none" opacity="0.3" />
+                                    
+                                    <!-- Decorative circles -->
+                                    <circle cx="300" cy="250" r="150" stroke="#1A3353" stroke-width="1" fill="none" stroke-dasharray="10 10" opacity="0.1" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- HOW IT WORKS -->
+            <section class="py-24 bg-white relative">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-20 reveal">
+                        <span class="text-brand-teal font-bold tracking-wider text-sm uppercase mb-2 block">Simplified Process</span>
+                        <h2 class="text-4xl font-extrabold text-brand-navy mb-4">It’s not software. It’s a service.</h2>
+                        <p class="text-slate-500 max-w-2xl mx-auto text-lg">Most AI tools require you to manage them. We take a different approach.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                        <!-- Connector Line -->
+                        <div class="hidden md:block absolute top-16 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-transparent via-brand-teal/30 to-transparent -z-10"></div>
+
+                        <!-- Step 1 -->
+                        <div class="relative text-center group reveal reveal-delay-100">
+                            <div class="relative w-32 h-32 mx-auto mb-8">
+                                <div class="absolute inset-0 bg-brand-teal/10 rounded-full scale-0 group-hover:scale-110 transition-transform duration-500 ease-out"></div>
+                                <div class="relative w-full h-full bg-white rounded-full shadow-soft group-hover:shadow-glow transition-all duration-300 flex items-center justify-center border border-slate-100">
+                                    <span class="text-5xl font-extrabold text-brand-teal/20 group-hover:text-brand-teal transition-colors">1</span>
+                                    <i data-lucide="settings-2" class="w-8 h-8 text-brand-teal absolute"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-brand-navy mb-3">We Setup</h3>
+                            <p class="text-slate-500 leading-relaxed px-4">We configure the AI agents tailored to your specific business rules and tone.</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="relative text-center group reveal reveal-delay-200">
+                            <div class="relative w-32 h-32 mx-auto mb-8">
+                                <div class="absolute inset-0 bg-brand-navy/10 rounded-full scale-0 group-hover:scale-110 transition-transform duration-500 ease-out"></div>
+                                <div class="relative w-full h-full bg-white rounded-full shadow-soft group-hover:shadow-xl transition-all duration-300 flex items-center justify-center border border-slate-100">
+                                    <span class="text-5xl font-extrabold text-brand-navy/20 group-hover:text-brand-navy transition-colors">2</span>
+                                    <i data-lucide="play" class="w-8 h-8 text-brand-navy absolute ml-1"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-brand-navy mb-3">We Run</h3>
+                            <p class="text-slate-500 leading-relaxed px-4">The system runs in the background. Calls and bookings happen automatically.</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="relative text-center group reveal reveal-delay-300">
+                            <div class="relative w-32 h-32 mx-auto mb-8">
+                                <div class="absolute inset-0 bg-green-100/50 rounded-full scale-0 group-hover:scale-110 transition-transform duration-500 ease-out"></div>
+                                <div class="relative w-full h-full bg-white rounded-full shadow-soft group-hover:shadow-glow transition-all duration-300 flex items-center justify-center border border-slate-100">
+                                    <span class="text-5xl font-extrabold text-brand-teal/20 group-hover:text-brand-teal transition-colors">3</span>
+                                    <i data-lucide="coffee" class="w-8 h-8 text-brand-teal absolute"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-2xl font-bold text-brand-navy mb-3">You Relax</h3>
+                            <p class="text-slate-500 leading-relaxed px-4">You get a summary of activity. No logging in, no tweaking settings.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BENEFITS GRID -->
+            <section class="py-24 bg-brand-light relative overflow-hidden">
+                <!-- Background Decoration -->
+                <div class="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+                <div class="absolute left-1/2 top-0 w-px h-full bg-gradient-to-b from-transparent via-slate-200 to-transparent"></div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="text-center mb-16 reveal">
+                        <h2 class="text-3xl font-bold text-brand-navy">Everything handled for you</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        
+                        <!-- Card 1 -->
+                        <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 hover:shadow-soft-hover transition-all duration-300 group reveal">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-brand-teal mb-6 shadow-sm border border-slate-100 group-hover:bg-brand-teal group-hover:text-white transition-all duration-300">
+                                <i data-lucide="phone-incoming" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-3 group-hover:text-brand-teal transition-colors">24/7 Call Handling</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">Never miss a lead. Our AI answers questions and qualifies callers instantly.</p>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 hover:shadow-soft-hover transition-all duration-300 group reveal reveal-delay-100">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-blue-600 mb-6 shadow-sm border border-slate-100 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                <i data-lucide="clock" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-3 group-hover:text-blue-600 transition-colors">Smart Scheduling</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">Appointments land directly in your calendar without the back-and-forth emails.</p>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 hover:shadow-soft-hover transition-all duration-300 group reveal reveal-delay-200">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-purple-600 mb-6 shadow-sm border border-slate-100 group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                                <i data-lucide="message-square" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-3 group-hover:text-purple-600 transition-colors">Instant Messaging</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">Replies to SMS, WhatsApp, and social DMs instantly with perfect context.</p>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 hover:shadow-soft-hover transition-all duration-300 group reveal">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-orange-600 mb-6 shadow-sm border border-slate-100 group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
+                                <i data-lucide="shield-check" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-3 group-hover:text-orange-600 transition-colors">Zero Maintenance</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">We handle the updates and prompts. You just run your business.</p>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 hover:shadow-soft-hover transition-all duration-300 group reveal reveal-delay-100">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-pink-600 mb-6 shadow-sm border border-slate-100 group-hover:bg-pink-600 group-hover:text-white transition-all duration-300">
+                                <i data-lucide="layout-template" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-3 group-hover:text-pink-600 transition-colors">No Dashboard</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">You don't need another login. We send summaries via email or text.</p>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="glass-card p-8 rounded-3xl hover:-translate-y-2 hover:shadow-soft-hover transition-all duration-300 group reveal reveal-delay-200">
+                            <div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-green-600 mb-6 shadow-sm border border-slate-100 group-hover:bg-green-600 group-hover:text-white transition-all duration-300">
+                                <i data-lucide="zap" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-brand-navy mb-3 group-hover:text-green-600 transition-colors">Admin Tasks</h3>
+                            <p class="text-slate-500 text-sm leading-relaxed">From following up on invoices to sorting emails, we handle the busy work.</p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- CAPABILITIES LIST -->
+            <section class="py-20 bg-white">
+                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                     <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-gray-100 pb-8 reveal">
+                        <div>
+                            <h2 class="text-3xl font-bold text-brand-navy mb-2">Capabilities</h2>
+                            <p class="text-slate-500">What TaskAlly can handle for you.</p>
+                        </div>
+                        <a href="#" onclick="showPage('pricing')" class="text-brand-teal font-bold hover:text-brand-navy transition-colors mt-4 md:mt-0 flex items-center gap-1 group">
+                            View All Services <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+                    </div>
+                     <div class="flex flex-wrap gap-4 reveal reveal-delay-100">
+                        <div class="px-6 py-4 rounded-full border border-slate-200 hover:border-brand-teal hover:bg-teal-50 hover:text-brand-teal transition-all cursor-default flex items-center gap-3 font-medium text-slate-600">
+                            <i data-lucide="mic" class="w-5 h-5"></i> Phone Answering
+                        </div>
+                        <div class="px-6 py-4 rounded-full border border-slate-200 hover:border-brand-teal hover:bg-teal-50 hover:text-brand-teal transition-all cursor-default flex items-center gap-3 font-medium text-slate-600">
+                            <i data-lucide="calendar" class="w-5 h-5"></i> Booking Management
+                        </div>
+                        <div class="px-6 py-4 rounded-full border border-slate-200 hover:border-brand-teal hover:bg-teal-50 hover:text-brand-teal transition-all cursor-default flex items-center gap-3 font-medium text-slate-600">
+                            <i data-lucide="mail" class="w-5 h-5"></i> Inbox Triage
+                        </div>
+                         <div class="px-6 py-4 rounded-full border border-slate-200 hover:border-brand-teal hover:bg-teal-50 hover:text-brand-teal transition-all cursor-default flex items-center gap-3 font-medium text-slate-600">
+                            <i data-lucide="file-text" class="w-5 h-5"></i> Invoice Follow-up
+                        </div>
+                        <div class="px-6 py-4 rounded-full border border-slate-200 hover:border-brand-teal hover:bg-teal-50 hover:text-brand-teal transition-all cursor-default flex items-center gap-3 font-medium text-slate-600">
+                            <i data-lucide="users" class="w-5 h-5"></i> Lead Qualification
+                        </div>
+                     </div>
+                 </div>
+            </section>
+
+            <!-- CTA SECTION -->
+            <section class="py-24 relative overflow-hidden bg-brand-navy">
+                <div class="absolute inset-0 bg-gradient-mesh opacity-10"></div>
+                <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-teal rounded-full blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div class="max-w-4xl mx-auto px-4 text-center relative z-10 reveal">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">Let us run your business tools<br>in the background.</h2>
+                    <p class="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">Reclaim 10+ hours a week. No setup fees, no complex software.</p>
+                    <button class="bg-brand-teal text-white px-10 py-5 rounded-full font-bold shadow-glow text-lg hover:scale-105 transition-transform duration-200 hover:bg-[#0EC7BE]">
+                        Start Free Consultation
+                    </button>
+                    <p class="mt-6 text-sm text-slate-400">No credit card required for consultation.</p>
+                </div>
+            </section>
+
+        </div> <!-- End of Home Page -->
+
+
+        <!-- ========================================= -->
+        <!-- PRICING PAGE (Inner Page) -->
+        <!-- ========================================= -->
+        <div id="pricing-page" class="hidden-page page-section">
+            
+            <section class="py-24 bg-gradient-mesh min-h-screen relative overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    
+                    <div class="text-center max-w-3xl mx-auto mb-16 reveal">
+                        <span class="text-brand-teal font-bold tracking-wider text-sm uppercase mb-4 block">Pricing</span>
+                        <h1 class="text-4xl lg:text-6xl font-extrabold text-brand-navy mb-6">Simple, transparent pricing.</h1>
+                        <p class="text-xl text-slate-500">Choose the level of support your business needs. We handle the setup and maintenance for all plans.</p>
+                    </div>
+
+                    <!-- Pricing Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                        
+                        <!-- Basic Plan -->
+                        <div class="bg-white/80 backdrop-blur-md rounded-[2rem] p-8 border border-white shadow-soft hover:shadow-lg transition-all reveal reveal-delay-100">
+                            <h3 class="text-2xl font-bold text-brand-navy mb-2">Starter</h3>
+                            <div class="flex items-baseline mb-6">
+                                <span class="text-4xl font-extrabold text-brand-navy">$199</span>
+                                <span class="text-slate-500 ml-2 font-medium">/month</span>
+                            </div>
+                            <p class="text-sm text-slate-500 mb-8 border-b border-gray-100 pb-8">Perfect for solo entrepreneurs needing basic call handling.</p>
+                            
+                            <ul class="space-y-4 mb-8">
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> AI Receptionist (Business Hours)
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> Basic Call Filtering
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> Email Summaries
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-400">
+                                    <i data-lucide="minus-circle" class="w-5 h-5"></i> No Scheduling
+                                </li>
+                            </ul>
+                            <button class="w-full py-4 rounded-xl border-2 border-slate-100 text-brand-navy font-bold hover:border-brand-navy hover:bg-brand-navy hover:text-white transition-all">Choose Starter</button>
+                        </div>
+
+                        <!-- Pro Plan (Highlighted) -->
+                        <div class="bg-brand-navy rounded-[2rem] p-8 border border-brand-navy shadow-2xl relative transform md:-translate-y-6 reveal z-10">
+                            <div class="pulse-ring"></div>
+                            <div class="absolute top-0 right-0 left-0 -mt-4 flex justify-center">
+                                <span class="bg-brand-teal text-white text-xs font-bold px-4 py-1.5 rounded-full uppercase tracking-wide shadow-lg">Most Popular</span>
+                            </div>
+                            
+                            <h3 class="text-2xl font-bold text-white mb-2">Growth</h3>
+                            <div class="flex items-baseline mb-6">
+                                <span class="text-5xl font-extrabold text-white">$499</span>
+                                <span class="text-slate-300 ml-2 font-medium">/month</span>
+                            </div>
+                            <p class="text-sm text-slate-300 mb-8 border-b border-white/10 pb-8">Full admin support for growing small businesses.</p>
+                            
+                            <ul class="space-y-5 mb-10">
+                                <li class="flex items-center gap-3 text-sm text-white font-medium">
+                                    <div class="bg-brand-teal/20 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-brand-teal"></i></div>
+                                    24/7 AI Receptionist
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-white font-medium">
+                                    <div class="bg-brand-teal/20 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-brand-teal"></i></div>
+                                    Smart Scheduling & Calendar Sync
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-white font-medium">
+                                    <div class="bg-brand-teal/20 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-brand-teal"></i></div>
+                                    SMS & WhatsApp Replies
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-white font-medium">
+                                    <div class="bg-brand-teal/20 p-1 rounded-full"><i data-lucide="check" class="w-4 h-4 text-brand-teal"></i></div>
+                                    Daily Activity Digest
+                                </li>
+                            </ul>
+                            <button class="w-full py-4 rounded-xl bg-brand-teal text-white font-bold hover:bg-[#0EC7BE] hover:shadow-glow transition-all transform hover:-translate-y-1">Choose Growth</button>
+                        </div>
+
+                        <!-- Enterprise/Custom Plan -->
+                        <div class="bg-white/80 backdrop-blur-md rounded-[2rem] p-8 border border-white shadow-soft hover:shadow-lg transition-all reveal reveal-delay-200">
+                            <h3 class="text-2xl font-bold text-brand-navy mb-2">Partner</h3>
+                            <div class="flex items-baseline mb-6">
+                                <span class="text-4xl font-extrabold text-brand-navy">$899</span>
+                                <span class="text-slate-500 ml-2 font-medium">/month</span>
+                            </div>
+                            <p class="text-sm text-slate-500 mb-8 border-b border-gray-100 pb-8">Complex workflows managed completely for you.</p>
+                            
+                            <ul class="space-y-4 mb-8">
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> Everything in Growth
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> Custom Workflow Automation
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> Dedicated Success Manager
+                                </li>
+                                <li class="flex items-center gap-3 text-sm text-slate-700">
+                                    <i data-lucide="check-circle-2" class="w-5 h-5 text-brand-teal"></i> Priority Support
+                                </li>
+                            </ul>
+                            <button class="w-full py-4 rounded-xl border-2 border-slate-100 text-brand-navy font-bold hover:border-brand-navy hover:bg-brand-navy hover:text-white transition-all">Contact Sales</button>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Money Back Guarantee / Trust -->
+                    <div class="mt-20 text-center reveal">
+                        <div class="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-sm">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-brand-teal"></i>
+                            <span class="text-sm text-slate-600 font-bold">30-Day Satisfaction Guarantee. Cancel anytime.</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-white border-t border-gray-200 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-1 md:col-span-1">
+                     <div class="flex items-center mb-6">
+                        <img src="https://i.ibb.co.com/Z63cKvMx/Transparent.png" alt="TaskAlly Logo" class="h-8 w-auto object-contain">
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                        Empowering small businesses with invisible, AI-driven support. We handle the tech so you can handle the business.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-navy mb-6">Company</h4>
+                    <ul class="space-y-3 text-sm text-slate-500">
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">About</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Careers</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Contact</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Blog</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-navy mb-6">Services</h4>
+                    <ul class="space-y-3 text-sm text-slate-500">
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Call Handling</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Scheduling</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Admin Support</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-brand-navy mb-6">Legal</h4>
+                    <ul class="space-y-3 text-sm text-slate-500">
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-brand-teal transition-colors">Security</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-slate-400">
+                <p>&copy; 2024 TaskAlly Inc. All rights reserved.</p>
+                <div class="flex gap-6 mt-4 md:mt-0">
+                    <i data-lucide="twitter" class="w-5 h-5 hover:text-brand-navy cursor-pointer transition-colors"></i>
+                    <i data-lucide="linkedin" class="w-5 h-5 hover:text-brand-navy cursor-pointer transition-colors"></i>
+                    <i data-lucide="instagram" class="w-5 h-5 hover:text-brand-navy cursor-pointer transition-colors"></i>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVITY SCRIPTS -->
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Scroll Reveal Observer
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Page Switching Logic
+        function showPage(pageId) {
+            // Hide all pages
+            document.getElementById('home-page').classList.add('hidden-page');
+            document.getElementById('pricing-page').classList.add('hidden-page');
+            
+            // Show specific page with a small timeout for transition effect
+            const selectedPage = document.getElementById(pageId + '-page');
+            selectedPage.classList.remove('hidden-page');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // Mobile Menu Toggle
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>
